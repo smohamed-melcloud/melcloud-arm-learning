@@ -26,5 +26,5 @@ jobs:
           subscriptionId : 0268ad35-91f4-4596-a9ee-70245667e9d1
           region: Australia East
           template: ./arm-templates/resourcegroup.json
-          deploymentName : rg-githubactions1
+          deploymentName : rg-githubactions
 
