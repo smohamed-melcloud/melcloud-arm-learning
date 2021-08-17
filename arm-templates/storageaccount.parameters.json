@@ -7,7 +7,9 @@
         },
         "location": {
             "value": "Australia Central" 
+        },
         "sku": {
             "value": "Standard_LRS" 
+        }
     }
 }
