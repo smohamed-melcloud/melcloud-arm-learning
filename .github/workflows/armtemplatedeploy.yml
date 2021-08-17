@@ -26,19 +26,27 @@ jobs:
           subscriptionId : 0268ad35-91f4-4596-a9ee-70245667e9d1
           region: Australia East
           template: ./arm-templates/resourcegroup.json
+          parameters:
+            location="Australia East"
+            resourceGroupName=rg-githubactions
           deploymentName : rg-githubactions
           
        - name: Deploy  Storage Account
          uses: Azure/arm-deploy@v1
+         id: storageAccountDeploy
          with:
           scope: resourcegroup
           resourceGroupName : rg-githubactions
           subscriptionId : 0268ad35-91f4-4596-a9ee-70245667e9d1
           template: ./arm-templates/storageaccount.json
           parameters: 
-            ./arm-templates/storageaccount.parameters.json
+            sku=Standard_LRS
             storageAccountName=melcloudstg002
             location="Australia East"
           deploymentMode : incremental
+
+       - run: echo ${{steps.storageAccountDeploy.outputs.BlobUri }}
+
+
 
 
