@@ -35,7 +35,10 @@ jobs:
           resourceGroupName : rg-githubactions
           subscriptionId : 0268ad35-91f4-4596-a9ee-70245667e9d1
           template: ./arm-templates/storageaccount.json
-          parameters: ./arm-templates/storageaccount.parameters.json
+          parameters: 
+            ./arm-templates/storageaccount.parameters.json
+            storageAccountName=melcloudstg002
+            location="Australia East"
           deploymentMode : incremental
 
 
