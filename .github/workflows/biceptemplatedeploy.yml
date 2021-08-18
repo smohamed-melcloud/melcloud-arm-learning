@@ -27,7 +27,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }} 
 
     - name: Deploy  Resource Group 
-      uses: Azure/cli@1.04
+      uses: Azure/cli@1.0.4
       with:
         inlinescript: |
          az deployment sub create \
@@ -39,7 +39,7 @@ jobs:
          location="${{ env.location}}"
 
     - name: Deploy  virtual network
-      uses: Azure/cli@1.04
+      uses: Azure/cli@1.0.4
       with:
          inlinescript: |
             az deployment group create \
