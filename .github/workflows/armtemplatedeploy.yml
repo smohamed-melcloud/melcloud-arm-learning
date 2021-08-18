@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 env:
   resource_group_name: rg-githubactions2
-  location: australiasoutheast
+  location: Southeast Asia
   subscriptionId: 0268ad35-91f4-4596-a9ee-70245667e9d1
 
 jobs:
