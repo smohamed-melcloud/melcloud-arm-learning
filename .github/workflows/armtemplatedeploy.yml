@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 env:
   resource_group_name: rg-githubactions
-  location: "Australia East"
+  location: Australia East
   subscriptionId: 0268ad35-91f4-4596-a9ee-70245667e9d1
 
 jobs:
@@ -28,10 +28,10 @@ jobs:
          with:
           scope: subscription
           subscriptionId : ${{env.subscriptionId}}
-          region: ${{env.location}}
+          region: "${{env.location}}"
           template: ./arm-templates/resourcegroup.json
           parameters:
-            location=${{env.location}}
+            location="${{env.location}}"
             resourceGroupName=${{env.resource_group_name}}
           deploymentName : ${{env.resource_group_name}}
           
@@ -46,7 +46,7 @@ jobs:
           parameters: 
             sku=Standard_LRS
             storageAccountName=melcloudstg002
-            location=${{env.location}}
+            location="${{env.location}}"
           deploymentMode : incremental
 
        - name: Deploy  Virtual Machine
@@ -58,7 +58,7 @@ jobs:
           template: ./arm-templates/virtualmachine.json
           parameters: 
             adminPassword=${{secrets.UBUNTU_ADMIN_PASSWORD}}
-            location=${{env.location}}
+            location="${{env.location}}"
           deploymentMode : incremental
 
 
