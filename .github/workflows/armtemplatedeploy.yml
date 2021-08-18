@@ -18,7 +18,7 @@ jobs:
       env:
        resource_group_name: rg-stg-githubactions
        location: Australia East
-       environment:
+      environment:
         name: staging
 
 
@@ -67,15 +67,14 @@ jobs:
             location="${{env.location}}"
           deploymentMode : incremental
 
-
     armDeployProduction:
       name: Deploy to Production
       runs-on: ubuntu-latest
       env:
        resource_group_name: rg-Prod-githubactions
        location: Australia Central
-       environment:
-        name: production
+      environment:
+       name: production
 
       needs: armDeployStaging
         
