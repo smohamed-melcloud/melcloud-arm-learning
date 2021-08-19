@@ -1,6 +1,7 @@
 param location string
+param storageAccountName string
 resource storage 'Microsoft.Storage/storageAccounts@2021-02-01' = {
-  name: 'teststorage1234'
+  name: storageAccountName
   sku:{
     name:'Standard_LRS'
   }
