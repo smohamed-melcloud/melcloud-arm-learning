@@ -64,17 +64,7 @@ jobs:
          location="${{env.location}}"
         deploymentMode : incremental
 
-    - name: Deploy  Container
-      uses: Azure/arm-deploy@v1      
-      with:
-        scope: Storage
-        resourceGroupName : ${{env.resource_group_name}}
-        subscriptionId : ${{env.subscriptionId}}
-        template: ./bicep-templates/container.bicep
-        parameters: 
-         location="${{env.location}}"
-        deploymentMode : incremental
-
+    
             
 
 
