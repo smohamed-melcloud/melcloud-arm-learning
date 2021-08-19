@@ -9,6 +9,7 @@ on:
  
 env:
   subscriptionId: 0268ad35-91f4-4596-a9ee-70245667e9d1
+  location: Australia East
 
 jobs:
   bicepArmDeployAction:         
@@ -58,9 +59,7 @@ jobs:
         subscriptionId : ${{env.subscriptionId}}
         template: ./bicep-templates/storage.bicep
         parameters: 
-          sku=Standard_LRS
-          storageAccountName=melcloudstg002
-          location="${{env.location}}"
+         location="${{env.location}}"
         deploymentMode : incremental
             
 
