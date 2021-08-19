@@ -17,6 +17,7 @@ jobs:
    env:
     resource_group_name: rg-bicp-azcli-githubactions
     location: Australia East
+   
 
    steps:
     - uses: actions/checkout@v2
@@ -32,7 +33,7 @@ jobs:
         inlinescript: |
          az deployment sub create \
          --name ${{env.resource_group_name }} \
-          --location "${{ env.location}}" \
+         --location "${{ env.location}}" \
          --template-file ./bicep-templates/resourcegroup.bicep \
          --parameters \
          resourceGroupName=${{ env.resource_group_name }} \
@@ -85,6 +86,20 @@ jobs:
        parameters:
         vNetPrefix=biceparmdeploy
         location="${{env.location}}"
+
+    - name: Deploy  Storage Account
+      uses: Azure/arm-deploy@v1
+      id: storageAccountDeploy
+      with:
+        scope: resourcegroup
+        resourceGroupName : ${{env.resource_group_name}}
+        subscriptionId : ${{env.subscriptionId}}
+        template: ./bicep-templates/storage.bicep
+        parameters: 
+          sku=Standard_LRS
+          storageAccountName=melcloudstg002
+          location="${{env.location}}"
+        deploymentMode : incremental
             
 
 
