@@ -1,7 +1,6 @@
 param location string
-param storageAccountName string
 resource storage 'Microsoft.Storage/storageAccounts@2021-02-01' = {
-  name: storageAccountName
+  name: 'melcloudstg0021'
   sku:{
     name:'Standard_LRS'
   }

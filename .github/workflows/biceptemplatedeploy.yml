@@ -37,6 +37,7 @@ jobs:
        parameters:
          location="${{env.location}}"
          resourceGroupName=${{env.resource_group_name}}
+       deploymentMode : incremental
           
 
     - name: Deploy  vnet
@@ -49,6 +50,7 @@ jobs:
        parameters:
         vNetPrefix=biceparmdeploy
         location="${{env.location}}"
+       deploymentMode : incremental
 
     - name: Deploy  Storage Account
       uses: Azure/arm-deploy@v1
