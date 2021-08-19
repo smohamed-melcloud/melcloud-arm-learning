@@ -63,6 +63,19 @@ jobs:
         parameters: 
          location="${{env.location}}"
         deploymentMode : incremental
+
+    - name: Deploy  Container
+      uses: Azure/arm-deploy@v1      
+      with:
+        scope: resourcegroup
+        resourceGroupName : ${{env.resource_group_name}}
+        subscriptionId : ${{env.subscriptionId}}
+        template: ./bicep-templates/container.bicep
+        parameters: 
+          adminPassword=${{secrets.UBUNTU_ADMIN_PASSWORD}}
+          location="${{env.location}}"
+        deploymentMode : incremental
+
             
 
 
