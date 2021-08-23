@@ -16,8 +16,7 @@ jobs:
    name: Bicep arm-deploy Deploy job
    runs-on: ubuntu-latest
    env:
-    resource_group_name: rg-bicp-armdeploy-githubactions
-    location: Australia East
+     location: Australia East
 
    steps:
     - uses: actions/checkout@v2
@@ -63,6 +62,22 @@ jobs:
         parameters: 
          location="${{env.location}}"
         deploymentMode : incremental
+
+    - name: Deploy  Virtual Machine
+      uses: Azure/arm-deploy@v1      
+      with:
+        scope: resourcegroup
+        resourceGroupName : ${{env.resource_group_name}}
+        subscriptionId : ${{env.subscriptionId}}
+        template: ./bicep-templates/virtualmachine.bicep
+        parameters: 
+         vmname = simple-vm
+         adminPassword = '[parameters('adminPassword')]'
+         location="${{env.location}}"
+        deploymentMode : incremental
+
+
+
 
     
             

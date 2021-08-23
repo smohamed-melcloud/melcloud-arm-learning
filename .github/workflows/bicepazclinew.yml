@@ -2,10 +2,10 @@ name: BicepAzcli
 
 
 
-#on:
- # push:
-  #  branches:
-   #   - main
+on:
+ push:
+   branches:
+     - main
  
 env:
   subscriptionId: 0268ad35-91f4-4596-a9ee-70245667e9d1
@@ -35,18 +35,9 @@ jobs:
          az deployment sub create \
          --name ${{env.resource_group_name }} \
          --location "${{ env.location}}" \
-         --template-file ./bicep-templates/resourcegroup.bicep \
+         --template-file ./bicep-templates/resourcedeploy.bicep \
          --parameters \
          resourceGroupName=${{ env.resource_group_name }} \
          location="${{ env.location}}"
 
-    - name: Deploy  virtual network
-      uses: Azure/cli@1.0.4
-      with:
-         inlinescript: |
-            az deployment group create \
-             --resource-group ${{ env.resource_group_name }} \
-             --template-file ./bicep-templates/virtualnetwork.bicep \
-             --parameters \
-             vNetPrefix=bicepazcli \
-             location ="${{ env.location}}" 
+   
