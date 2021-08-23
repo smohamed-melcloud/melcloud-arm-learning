@@ -16,7 +16,6 @@ jobs:
    name: Bicep AZ CLI Deploy job
    runs-on: ubuntu-latest
    env:
-    resource_group_name: rg-bicp-azcli-githubactions
     location: Australia East
    
 
