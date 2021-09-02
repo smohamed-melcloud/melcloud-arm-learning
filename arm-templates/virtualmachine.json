@@ -116,7 +116,7 @@
             },
             "osProfile": {
                 "computerName": "ubuntuVM1",
-                "adminUsername": "Sharam",
+                "adminUsername": "Admin",
                 "adminPassword": "[parameters('adminPassword')]"
             },
             "storageProfile": {
