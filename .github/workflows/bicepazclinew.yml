@@ -61,7 +61,8 @@ jobs:
              subnet5Prefix="10.10.5.0/24" \
              subnet5Name=ApplicationGatewaySubnet \
              subnet6Prefix="10.10.6.0/24" \
-             subnet6Name=GatewaySubnet 
+             subnet6Name=GatewaySubnet  \
+             location="${{ env.location}}"
              
 
    

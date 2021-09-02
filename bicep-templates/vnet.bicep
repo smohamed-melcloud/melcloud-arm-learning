@@ -1,3 +1,5 @@
+
+
 @description('VNet name')
 param vnetName string
 
@@ -40,8 +42,7 @@ param subnet6Prefix string
 @description('Subnet 6 Name')
 param subnet6Name string
 
-@description('Location for all resources.')
-param location string
+param location string = resourceGroup().location
 
 resource vnetName_resource 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: vnetName
@@ -57,8 +58,7 @@ resource vnetName_resource 'Microsoft.Network/virtualNetworks@2020-05-01' = {
 
 resource vnetName_subnet1Name 'Microsoft.Network/virtualNetworks/subnets@2020-05-01' = {
   parent: vnetName_resource
-  location: location
-  name: subnet1Name
+   name: subnet1Name
   properties: {
     addressPrefix: subnet1Prefix
   }
@@ -66,8 +66,7 @@ resource vnetName_subnet1Name 'Microsoft.Network/virtualNetworks/subnets@2020-05
 
 resource vnetName_subnet2Name 'Microsoft.Network/virtualNetworks/subnets@2020-05-01' = {
   parent: vnetName_resource
-  location: location
-  name: subnet2Name
+   name: subnet2Name
   properties: {
     addressPrefix: subnet2Prefix
   }
@@ -78,8 +77,7 @@ resource vnetName_subnet2Name 'Microsoft.Network/virtualNetworks/subnets@2020-05
 
 resource vnetName_subnet3Name 'Microsoft.Network/virtualNetworks/subnets@2020-05-01' = {
   parent: vnetName_resource
-  location: location
-  name: subnet3Name
+   name: subnet3Name
   properties: {
     addressPrefix: subnet3Prefix
   }
@@ -90,8 +88,7 @@ resource vnetName_subnet3Name 'Microsoft.Network/virtualNetworks/subnets@2020-05
 
 resource vnetName_subnet4Name 'Microsoft.Network/virtualNetworks/subnets@2020-05-01' = {
   parent: vnetName_resource
-  location: location
-  name: subnet4Name
+   name: subnet4Name
   properties: {
     addressPrefix: subnet4Prefix
   }
@@ -102,7 +99,6 @@ resource vnetName_subnet4Name 'Microsoft.Network/virtualNetworks/subnets@2020-05
 
 resource vnetName_subnet5Name 'Microsoft.Network/virtualNetworks/subnets@2020-05-01' = {
   parent: vnetName_resource
-  location: location
   name: subnet5Name
   properties: {
     addressPrefix: subnet5Prefix
@@ -114,8 +110,7 @@ resource vnetName_subnet5Name 'Microsoft.Network/virtualNetworks/subnets@2020-05
 
 resource vnetName_subnet6Name 'Microsoft.Network/virtualNetworks/subnets@2020-05-01' = {
   parent: vnetName_resource
-  location: location
-  name: subnet6Name
+    name: subnet6Name
   properties: {
     addressPrefix: subnet6Prefix
   }
