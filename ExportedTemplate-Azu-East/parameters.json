@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworks_Azu_East_Vnet1_name": {
+            "value": null
+        },
+        "networkSecurityGroups_Azu_East_DefaultAccessNSG_externalid": {
+            "value": null
+        },
+        "networkSecurityGroups_GIS_Subnet_nsg_externalid": {
+            "value": null
+        },
+        "networkSecurityGroups_aadds_nsg_externalid": {
+            "value": null
+        },
+        "virtualNetworks_rg_Intranet_vnet_externalid": {
+            "value": null
+        }
+    }
+}

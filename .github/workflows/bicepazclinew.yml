@@ -46,6 +46,7 @@ jobs:
          inlinescript: |
             az deployment group create \
              --resource-group ${{ env.resource_group_name }} \
+             --location "${{ env.location}}" \
              --template-file ./bicep-templates/vnet.bicep \
              --parameters \
              vnetName="hub-vnet" \
@@ -61,8 +62,8 @@ jobs:
              subnet5Prefix="10.10.5.0/24" \
              subnet5Name=ApplicationGatewaySubnet \
              subnet6Prefix="10.10.6.0/24" \
-             subnet6Name=GatewaySubnet  \
-             location="${{ env.location}}"
+             subnet6Name=GatewaySubnet  
+         
              
 
    
