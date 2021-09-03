@@ -7,19 +7,19 @@
             "type": "String"
         },
         "networkSecurityGroups_Azu_East_DefaultAccessNSG_externalid": {
-            "defaultValue": "/subscriptions/c024bb26-c458-42aa-879b-1671aa046ff0/resourceGroups/Azu-East/providers/Microsoft.Network/networkSecurityGroups/Azu-East-DefaultAccessNSG",
+            "defaultValue": "/subscriptions/0268ad35-91f4-4596-a9ee-70245667e9d1/resourceGroups/Azu-East/providers/Microsoft.Network/networkSecurityGroups/Azu-East-DefaultAccessNSG",
             "type": "String"
         },
         "networkSecurityGroups_GIS_Subnet_nsg_externalid": {
-            "defaultValue": "/subscriptions/c024bb26-c458-42aa-879b-1671aa046ff0/resourceGroups/ARPANSA-GIS/providers/Microsoft.Network/networkSecurityGroups/GIS-Subnet-nsg",
+            "defaultValue": "/subscriptions/0268ad35-91f4-4596-a9ee-70245667e9d1/resourceGroups/ARPANSA-GIS/providers/Microsoft.Network/networkSecurityGroups/GIS-Subnet-nsg",
             "type": "String"
         },
         "networkSecurityGroups_aadds_nsg_externalid": {
-            "defaultValue": "/subscriptions/c024bb26-c458-42aa-879b-1671aa046ff0/resourceGroups/rg-infra-AADDS/providers/Microsoft.Network/networkSecurityGroups/aadds-nsg",
+            "defaultValue": "/subscriptions/0268ad35-91f4-4596-a9ee-70245667e9d1/resourceGroups/rg-infra-AADDS/providers/Microsoft.Network/networkSecurityGroups/aadds-nsg",
             "type": "String"
         },
         "virtualNetworks_rg_Intranet_vnet_externalid": {
-            "defaultValue": "/subscriptions/c024bb26-c458-42aa-879b-1671aa046ff0/resourceGroups/rg-Intranet/providers/Microsoft.Network/virtualNetworks/rg-Intranet-vnet",
+            "defaultValue": "/subscriptions/0268ad35-91f4-4596-a9ee-70245667e9d1/resourceGroups/rg-Intranet/providers/Microsoft.Network/virtualNetworks/rg-Intranet-vnet",
             "type": "String"
         }
     },
