@@ -58,7 +58,8 @@ resource vnetName_resource 'Microsoft.Network/virtualNetworks@2020-05-01' = {
 
 resource vnetName_subnet1Name 'Microsoft.Network/virtualNetworks/subnets@2020-05-01' = {
   parent: vnetName_resource
-   name: subnet1Name
+  location: location
+  name: subnet1Name
   properties: {
     addressPrefix: subnet1Prefix
   }
