@@ -24,4 +24,4 @@ jobs:
       with:
         azcliversion: 2.0.72
         inlineScript: |
-          az group create --name rg-wvd 
+          az group create --name rg-wvd  --location "Australia East"
