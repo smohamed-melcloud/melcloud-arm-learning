@@ -1,12 +1,17 @@
-
 on: [push]
 
-name: AzureCLISample
+name: WVD Deployment
 
 jobs:
 
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+       subscriptionId: 0268ad35-91f4-4596-a9ee-70245667e9d1
+       resource_group_name: rg-stg-githubactions
+       location: Australia East
+    environment:
+       name: staging
     steps:
     
     - name: Azure Login
@@ -14,10 +19,9 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     
-    - name: Azure CLI script
+    - name: Deploy Resource Group
       uses: azure/CLI@v1
       with:
         azcliversion: 2.0.72
         inlineScript: |
-          az account show
-          az storage -h
+          az group create --name rg-wvd 
