@@ -20,13 +20,9 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     
     - name: Deploy Resource Group
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.0.72
+      uses: Azure/cli@1.0.4
+      with:        
         inlineScript: |
           az group create --name hub-spoke --location "Australia East"
-          az deployment sub create \
-            --resource-group hub-spoke \
-            --template-file ./arm-templates/azuredeploy.json \
-            --parameters adminPassword=Password2020! linuxVMCount=1 windowsVMCount=1 deployVpnGateway=true
+          az deployment group create  --resource-group hub-spoke --template-file ./arm-templates/azuredeploy.json --parameters adminPassword=Password2020! linuxVMCount=1 windowsVMCount=1 deployVpnGateway=true
 
