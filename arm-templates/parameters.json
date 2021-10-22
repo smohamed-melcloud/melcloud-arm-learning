@@ -3,61 +3,61 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "workbooks_8534f873_7397_58a6_9618_6d146b3ec7c6_serializedData": {
-            "value": null
+            "value": "MyWorkbook"
         },
         "virtualNetworks_vnet_hub_name": {
-            "value": null
+            "value": "Hub"
         },
         "virtualMachines_vm_linux_0_name": {
-            "value": null
+            "value": "LinuxMachine1"
         },
         "routeTables_r_nexthop_to_fw_name": {
-            "value": null
+            "value": "MyRouteTable"
         },
         "virtualMachines_vm_windows_0_name": {
-            "value": null
+            "value": "MelcloudDC"
         },
         "azureFirewalls_AzureFirewall_name": {
-            "value": null
+            "value": "MelcloudFirewall"
         },
         "bastionHosts_AzureBastionHost_name": {
-            "value": null
+            "value": "MyBaston"
         },
         "networkInterfaces_nic_linux_0_name": {
-            "value": null
+            "value": "NetworkInterface1"
         },
         "publicIPAddresses_pip_bastion_name": {
-            "value": null
+            "value": "BastonPublicIP"
         },
         "publicIPAddresses_pip_firewall_name": {
-            "value": null
+            "value": "FirewallPublicIP"
         },
         "virtualNetworks_vnet_spoke_one_name": {
-            "value": null
+            "value": "SpokeVnet1"
         },
         "virtualNetworks_vnet_spoke_two_name": {
-            "value": null
+            "value": "SpokeVnet2"
         },
         "networkInterfaces_nic_windows_0_name": {
-            "value": null
+            "value": "DC-nic"
         },
         "workspaces_wtpoltxop24im_name": {
-            "value": null
+            "value": "ws"
         },
         "networkSecurityGroups_nsg_hub_bastion_name": {
-            "value": null
+            "value": "NSG-Baston"
         },
         "networkSecurityGroups_nsg_spoke_one_resources_name": {
-            "value": null
+            "value": "NSG-Spoke1"
         },
         "networkSecurityGroups_nsg_spoke_two_resources_name": {
-            "value": null
+            "value":"NSG-Spoke2"
         },
         "workbooks_8534f873_7397_58a6_9618_6d146b3ec7c6_name": {
-            "value": null
+            "value": "Monitor-WS"
         },
         "routeTables__e41f87a2_AZBST_RT_81276a78_ca8f_4500_9030_2c6020fa5679_externalid": {
-            "value": null
+            "value": "RouteTable"
         }
     }
 }
