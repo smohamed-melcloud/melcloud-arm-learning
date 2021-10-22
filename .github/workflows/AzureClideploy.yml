@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
        subscriptionId: 0268ad35-91f4-4596-a9ee-70245667e9d1
-       resource_group_name: rg-stg-githubactions
+       resource_group_name: rg-wvd
        location: Australia East
     environment:
        name: staging
@@ -24,4 +24,7 @@ jobs:
       with:
         azcliversion: 2.0.72
         inlineScript: |
-          az group create --name rg-wvd  --location "Australia East"
+          az deployment group create \
+              --resource-group hub-spoke \
+              --template-uri https://raw.githubusercontent.com/mspnp/samples/master/solutions/azure-hub-spoke/azuredeploy.json \
+              --parameters adminPassword=Password2020! linuxVMCount=1 windowsVMCount=1 deployVpnGateway=true
