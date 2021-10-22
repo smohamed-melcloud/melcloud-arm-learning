@@ -1,0 +1,63 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workbooks_8534f873_7397_58a6_9618_6d146b3ec7c6_serializedData": {
+            "value": null
+        },
+        "virtualNetworks_vnet_hub_name": {
+            "value": null
+        },
+        "virtualMachines_vm_linux_0_name": {
+            "value": null
+        },
+        "routeTables_r_nexthop_to_fw_name": {
+            "value": null
+        },
+        "virtualMachines_vm_windows_0_name": {
+            "value": null
+        },
+        "azureFirewalls_AzureFirewall_name": {
+            "value": null
+        },
+        "bastionHosts_AzureBastionHost_name": {
+            "value": null
+        },
+        "networkInterfaces_nic_linux_0_name": {
+            "value": null
+        },
+        "publicIPAddresses_pip_bastion_name": {
+            "value": null
+        },
+        "publicIPAddresses_pip_firewall_name": {
+            "value": null
+        },
+        "virtualNetworks_vnet_spoke_one_name": {
+            "value": null
+        },
+        "virtualNetworks_vnet_spoke_two_name": {
+            "value": null
+        },
+        "networkInterfaces_nic_windows_0_name": {
+            "value": null
+        },
+        "workspaces_wtpoltxop24im_name": {
+            "value": null
+        },
+        "networkSecurityGroups_nsg_hub_bastion_name": {
+            "value": null
+        },
+        "networkSecurityGroups_nsg_spoke_one_resources_name": {
+            "value": null
+        },
+        "networkSecurityGroups_nsg_spoke_two_resources_name": {
+            "value": null
+        },
+        "workbooks_8534f873_7397_58a6_9618_6d146b3ec7c6_name": {
+            "value": null
+        },
+        "routeTables__e41f87a2_AZBST_RT_81276a78_ca8f_4500_9030_2c6020fa5679_externalid": {
+            "value": null
+        }
+    }
+}

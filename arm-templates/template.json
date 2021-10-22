@@ -1,0 +1,1860 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workbooks_8534f873_7397_58a6_9618_6d146b3ec7c6_serializedData": {
+            "type": "SecureString"
+        },
+        "virtualNetworks_vnet_hub_name": {
+            "defaultValue": "vnet-hub",
+            "type": "String"
+        },
+        "virtualMachines_vm_linux_0_name": {
+            "defaultValue": "vm-linux-0",
+            "type": "String"
+        },
+        "routeTables_r_nexthop_to_fw_name": {
+            "defaultValue": "r-nexthop-to-fw",
+            "type": "String"
+        },
+        "virtualMachines_vm_windows_0_name": {
+            "defaultValue": "vm-windows-0",
+            "type": "String"
+        },
+        "azureFirewalls_AzureFirewall_name": {
+            "defaultValue": "AzureFirewall",
+            "type": "String"
+        },
+        "bastionHosts_AzureBastionHost_name": {
+            "defaultValue": "AzureBastionHost",
+            "type": "String"
+        },
+        "networkInterfaces_nic_linux_0_name": {
+            "defaultValue": "nic-linux-0",
+            "type": "String"
+        },
+        "publicIPAddresses_pip_bastion_name": {
+            "defaultValue": "pip-bastion",
+            "type": "String"
+        },
+        "publicIPAddresses_pip_firewall_name": {
+            "defaultValue": "pip-firewall",
+            "type": "String"
+        },
+        "virtualNetworks_vnet_spoke_one_name": {
+            "defaultValue": "vnet-spoke-one",
+            "type": "String"
+        },
+        "virtualNetworks_vnet_spoke_two_name": {
+            "defaultValue": "vnet-spoke-two",
+            "type": "String"
+        },
+        "networkInterfaces_nic_windows_0_name": {
+            "defaultValue": "nic-windows-0",
+            "type": "String"
+        },
+        "workspaces_wtpoltxop24im_name": {
+            "defaultValue": "wtpoltxop24im",
+            "type": "String"
+        },
+        "networkSecurityGroups_nsg_hub_bastion_name": {
+            "defaultValue": "nsg-hub-bastion",
+            "type": "String"
+        },
+        "networkSecurityGroups_nsg_spoke_one_resources_name": {
+            "defaultValue": "nsg-spoke-one-resources",
+            "type": "String"
+        },
+        "networkSecurityGroups_nsg_spoke_two_resources_name": {
+            "defaultValue": "nsg-spoke-two-resources",
+            "type": "String"
+        },
+        "workbooks_8534f873_7397_58a6_9618_6d146b3ec7c6_name": {
+            "defaultValue": "8534f873-7397-58a6-9618-6d146b3ec7c6",
+            "type": "String"
+        },
+        "routeTables__e41f87a2_AZBST_RT_81276a78_ca8f_4500_9030_2c6020fa5679_externalid": {
+            "defaultValue": "/subscriptions/0268ad35-91f4-4596-a9ee-70245667e9d1/resourceGroups/hub-spoke/providers/Microsoft.Network/routeTables/_e41f87a2_AZBST_RT_81276a78-ca8f-4500-9030-2c6020fa5679",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('networkSecurityGroups_nsg_hub_bastion_name')]",
+            "location": "australiaeast",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "bastion-in-allow",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "Internet",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "bastion-control-in-allow",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "GatewayManager",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 120,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "bastion-in-host",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 130,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [
+                                "8080",
+                                "5701"
+                            ],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "bastion-vnet-out-allow",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Outbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [
+                                "22",
+                                "3389"
+                            ],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "bastion-azure-out-allow",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "AzureCloud",
+                            "access": "Allow",
+                            "priority": 120,
+                            "direction": "Outbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "bastion-out-host",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 130,
+                            "direction": "Outbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [
+                                "8080",
+                                "5701"
+                            ],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "bastion-out-deny",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 1000,
+                            "direction": "Outbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('networkSecurityGroups_nsg_spoke_one_resources_name')]",
+            "location": "australiaeast",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "bastion-in-vnet",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "10.0.1.0/29",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [
+                                "22",
+                                "3389"
+                            ],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllInBound",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 1000,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('networkSecurityGroups_nsg_spoke_two_resources_name')]",
+            "location": "australiaeast",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "bastion-in-vnet",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "10.0.1.0/29",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [
+                                "22",
+                                "3389"
+                            ],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllInBound",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 1000,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('publicIPAddresses_pip_bastion_name')]",
+            "location": "australiaeast",
+            "sku": {
+                "name": "Standard",
+                "tier": "Regional"
+            },
+            "zones": [
+                "1",
+                "2",
+                "3"
+            ],
+            "properties": {
+                "ipAddress": "20.193.32.175",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('publicIPAddresses_pip_firewall_name')]",
+            "location": "australiaeast",
+            "sku": {
+                "name": "Standard",
+                "tier": "Regional"
+            },
+            "zones": [
+                "1",
+                "2",
+                "3"
+            ],
+            "properties": {
+                "ipAddress": "20.193.32.100",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('routeTables_r_nexthop_to_fw_name')]",
+            "location": "australiaeast",
+            "properties": {
+                "disableBgpRoutePropagation": false,
+                "routes": [
+                    {
+                        "name": "[parameters('routeTables_r_nexthop_to_fw_name')]",
+                        "properties": {
+                            "addressPrefix": "0.0.0.0/0",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.0.3.4",
+                            "hasBgpOverride": false
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "apiVersion": "2021-06-01",
+            "name": "[parameters('workspaces_wtpoltxop24im_name')]",
+            "location": "australiaeast",
+            "properties": {
+                "provisioningState": "Succeeded",
+                "sku": {
+                    "name": "PerGB2018"
+                },
+                "retentionInDays": 30,
+                "features": {
+                    "enableLogAccessUsingOnlyResourcePermissions": true
+                },
+                "workspaceCapping": {
+                    "dailyQuotaGb": -1
+                },
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2021-03-01",
+            "name": "[parameters('virtualMachines_vm_linux_0_name')]",
+            "location": "australiaeast",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_nic_linux_0_name'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_A1_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "Canonical",
+                        "offer": "UbuntuServer",
+                        "sku": "16.04.0-LTS",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "[concat(parameters('virtualMachines_vm_linux_0_name'), '_OsDisk_1_cc9a6bddd7924a1ea1328589e9dfe86b')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS",
+                            "id": "[resourceId('Microsoft.Compute/disks', concat(parameters('virtualMachines_vm_linux_0_name'), '_OsDisk_1_cc9a6bddd7924a1ea1328589e9dfe86b'))]"
+                        },
+                        "deleteOption": "Detach",
+                        "diskSizeGB": 30
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_vm_linux_0_name')]",
+                    "adminUsername": "Melcloudadmin",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": false,
+                        "provisionVMAgent": true,
+                        "patchSettings": {
+                            "patchMode": "ImageDefault",
+                            "assessmentMode": "ImageDefault"
+                        }
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true,
+                    "requireGuestProvisionSignal": true
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_nic_linux_0_name'))]"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2021-03-01",
+            "name": "[parameters('virtualMachines_vm_windows_0_name')]",
+            "location": "australiaeast",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_nic_windows_0_name'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_A1_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2016-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "[concat(parameters('virtualMachines_vm_windows_0_name'), '_OsDisk_1_58ffd6925b5540afb445f2b769f25237')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS",
+                            "id": "[resourceId('Microsoft.Compute/disks', concat(parameters('virtualMachines_vm_windows_0_name'), '_OsDisk_1_58ffd6925b5540afb445f2b769f25237'))]"
+                        },
+                        "deleteOption": "Detach",
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_vm_windows_0_name')]",
+                    "adminUsername": "Melcloudadmin",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true,
+                        "patchSettings": {
+                            "patchMode": "AutomaticByOS",
+                            "assessmentMode": "ImageDefault"
+                        }
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true,
+                    "requireGuestProvisionSignal": true
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_nic_windows_0_name'))]"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "microsoft.insights/workbooks",
+            "apiVersion": "2021-03-08",
+            "name": "[parameters('workbooks_8534f873_7397_58a6_9618_6d146b3ec7c6_name')]",
+            "location": "australiaeast",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "tags": {
+                "hidden-title": "Azure Firewall Workbook"
+            },
+            "kind": "shared",
+            "properties": {
+                "displayName": "Azure Firewall Workbook",
+                "version": "1.0",
+                "category": "workbook",
+                "sourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]",
+                "revision": "9e2b066fa99546c99235dd6ca26e8d48",
+                "serializedData": "[parameters('workbooks_8534f873_7397_58a6_9618_6d146b3ec7c6_serializedData')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('networkInterfaces_nic_linux_0_name')]",
+            "location": "australiaeast",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_spoke_one_name'), 'snet-spoke-resources')]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig",
+                        "properties": {
+                            "privateIPAddress": "10.100.0.5",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_spoke_one_name'), 'snet-spoke-resources')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('networkInterfaces_nic_windows_0_name')]",
+            "location": "australiaeast",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_spoke_one_name'), 'snet-spoke-resources')]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig",
+                        "properties": {
+                            "privateIPAddress": "10.100.0.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_spoke_one_name'), 'snet-spoke-resources')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_hub_bastion_name'), '/bastion-azure-out-allow')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_hub_bastion_name'))]"
+            ],
+            "properties": {
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "443",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "AzureCloud",
+                "access": "Allow",
+                "priority": 120,
+                "direction": "Outbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_hub_bastion_name'), '/bastion-control-in-allow')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_hub_bastion_name'))]"
+            ],
+            "properties": {
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "443",
+                "sourceAddressPrefix": "GatewayManager",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 120,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_hub_bastion_name'), '/bastion-in-allow')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_hub_bastion_name'))]"
+            ],
+            "properties": {
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "443",
+                "sourceAddressPrefix": "Internet",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 100,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_hub_bastion_name'), '/bastion-in-host')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_hub_bastion_name'))]"
+            ],
+            "properties": {
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "VirtualNetwork",
+                "destinationAddressPrefix": "VirtualNetwork",
+                "access": "Allow",
+                "priority": 130,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [
+                    "8080",
+                    "5701"
+                ],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_spoke_one_resources_name'), '/bastion-in-vnet')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_spoke_one_resources_name'))]"
+            ],
+            "properties": {
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "10.0.1.0/29",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 100,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [
+                    "22",
+                    "3389"
+                ],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_spoke_two_resources_name'), '/bastion-in-vnet')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_spoke_two_resources_name'))]"
+            ],
+            "properties": {
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "10.0.1.0/29",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 100,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [
+                    "22",
+                    "3389"
+                ],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_hub_bastion_name'), '/bastion-out-deny')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_hub_bastion_name'))]"
+            ],
+            "properties": {
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Deny",
+                "priority": 1000,
+                "direction": "Outbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_hub_bastion_name'), '/bastion-out-host')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_hub_bastion_name'))]"
+            ],
+            "properties": {
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "VirtualNetwork",
+                "destinationAddressPrefix": "VirtualNetwork",
+                "access": "Allow",
+                "priority": 130,
+                "direction": "Outbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [
+                    "8080",
+                    "5701"
+                ],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_hub_bastion_name'), '/bastion-vnet-out-allow')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_hub_bastion_name'))]"
+            ],
+            "properties": {
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "VirtualNetwork",
+                "access": "Allow",
+                "priority": 100,
+                "direction": "Outbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [
+                    "22",
+                    "3389"
+                ],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_spoke_one_resources_name'), '/DenyAllInBound')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_spoke_one_resources_name'))]"
+            ],
+            "properties": {
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Deny",
+                "priority": 1000,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_spoke_two_resources_name'), '/DenyAllInBound')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_spoke_two_resources_name'))]"
+            ],
+            "properties": {
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Deny",
+                "priority": 1000,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables/routes",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('routeTables_r_nexthop_to_fw_name'), '/', parameters('routeTables_r_nexthop_to_fw_name'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_r_nexthop_to_fw_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopType": "VirtualAppliance",
+                "nextHopIpAddress": "10.0.3.4",
+                "hasBgpOverride": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_hub_name'), '/AzureFirewallSubnet')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.3.0/26",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_hub_name'), '/GatewaySubnet')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.2.0/27",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_General|AlphabeticallySortedComputers')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "All Computers with their most recent data",
+                "category": "General Exploration",
+                "query": "search not(ObjectName == \"Advisor Metrics\" or ObjectName == \"ManagedSpace\") | summarize AggregatedValue = max(TimeGenerated) by Computer | limit 500000 | sort by Computer asc\r\n// Oql: NOT(ObjectName=\"Advisor Metrics\" OR ObjectName=ManagedSpace) | measure max(TimeGenerated) by Computer | top 500000 | Sort Computer // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_General|dataPointsPerManagementGroup')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Which Management Group is generating the most data points?",
+                "category": "General Exploration",
+                "query": "search * | summarize AggregatedValue = count() by ManagementGroupName\r\n// Oql: * | Measure count() by ManagementGroupName // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_General|dataTypeDistribution')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Distribution of data Types",
+                "category": "General Exploration",
+                "query": "search * | extend Type = $table | summarize AggregatedValue = count() by Type\r\n// Oql: * | Measure count() by Type // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_General|StaleComputers')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Stale Computers (data older than 24 hours)",
+                "category": "General Exploration",
+                "query": "search not(ObjectName == \"Advisor Metrics\" or ObjectName == \"ManagedSpace\") | summarize lastdata = max(TimeGenerated) by Computer | limit 500000 | where lastdata < ago(24h)\r\n// Oql: NOT(ObjectName=\"Advisor Metrics\" OR ObjectName=ManagedSpace) | measure max(TimeGenerated) as lastdata by Computer | top 500000 | where lastdata < NOW-24HOURS // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|AllEvents')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "All Events",
+                "category": "Log Management",
+                "query": "Event | sort by TimeGenerated desc\r\n// Oql: Type=Event // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|AllSyslog')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "All Syslogs",
+                "category": "Log Management",
+                "query": "Syslog | sort by TimeGenerated desc\r\n// Oql: Type=Syslog // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|AllSyslogByFacility')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "All Syslog Records grouped by Facility",
+                "category": "Log Management",
+                "query": "Syslog | summarize AggregatedValue = count() by Facility\r\n// Oql: Type=Syslog | Measure count() by Facility // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|AllSyslogByProcessName')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "All Syslog Records grouped by ProcessName",
+                "category": "Log Management",
+                "query": "Syslog | summarize AggregatedValue = count() by ProcessName\r\n// Oql: Type=Syslog | Measure count() by ProcessName // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|AllSyslogsWithErrors')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "All Syslog Records with Errors",
+                "category": "Log Management",
+                "query": "Syslog | where SeverityLevel == \"error\" | sort by TimeGenerated desc\r\n// Oql: Type=Syslog SeverityLevel=error // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|AverageHTTPRequestTimeByClientIPAddress')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Average HTTP Request time by Client IP Address",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = avg(TimeTaken) by cIP\r\n// Oql: Type=W3CIISLog | Measure Avg(TimeTaken) by cIP // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|AverageHTTPRequestTimeHTTPMethod')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Average HTTP Request time by HTTP Method",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = avg(TimeTaken) by csMethod\r\n// Oql: Type=W3CIISLog | Measure Avg(TimeTaken) by csMethod // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|CountIISLogEntriesClientIPAddress')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Count of IIS Log Entries by Client IP Address",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by cIP\r\n// Oql: Type=W3CIISLog | Measure count() by cIP // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|CountIISLogEntriesHTTPRequestMethod')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Count of IIS Log Entries by HTTP Request Method",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by csMethod\r\n// Oql: Type=W3CIISLog | Measure count() by csMethod // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|CountIISLogEntriesHTTPUserAgent')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Count of IIS Log Entries by HTTP User Agent",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by csUserAgent\r\n// Oql: Type=W3CIISLog | Measure count() by csUserAgent // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|CountOfIISLogEntriesByHostRequestedByClient')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Count of IIS Log Entries by Host requested by client",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by csHost\r\n// Oql: Type=W3CIISLog | Measure count() by csHost // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|CountOfIISLogEntriesByURLForHost')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Count of IIS Log Entries by URL for the host \"www.contoso.com\" (replace with your own)",
+                "category": "Log Management",
+                "query": "search csHost == \"www.contoso.com\" | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by csUriStem\r\n// Oql: Type=W3CIISLog csHost=\"www.contoso.com\" | Measure count() by csUriStem // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|CountOfIISLogEntriesByURLRequestedByClient')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Count of IIS Log Entries by URL requested by client (without query strings)",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by csUriStem\r\n// Oql: Type=W3CIISLog | Measure count() by csUriStem // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|CountOfWarningEvents')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Count of Events with level \"Warning\" grouped by Event ID",
+                "category": "Log Management",
+                "query": "Event | where EventLevelName == \"warning\" | summarize AggregatedValue = count() by EventID\r\n// Oql: Type=Event EventLevelName=warning | Measure count() by EventID // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|DisplayBreakdownRespondCodes')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Shows breakdown of response codes",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by scStatus\r\n// Oql: Type=W3CIISLog | Measure count() by scStatus // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|EventsByEventLog')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Count of Events grouped by Event Log",
+                "category": "Log Management",
+                "query": "Event | summarize AggregatedValue = count() by EventLog\r\n// Oql: Type=Event | Measure count() by EventLog // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|EventsByEventsID')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Count of Events grouped by Event ID",
+                "category": "Log Management",
+                "query": "Event | summarize AggregatedValue = count() by EventID\r\n// Oql: Type=Event | Measure count() by EventID // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|EventsByEventSource')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Count of Events grouped by Event Source",
+                "category": "Log Management",
+                "query": "Event | summarize AggregatedValue = count() by Source\r\n// Oql: Type=Event | Measure count() by Source // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|EventsInOMBetween2000to3000')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Events in the Operations Manager Event Log whose Event ID is in the range between 2000 and 3000",
+                "category": "Log Management",
+                "query": "Event | where EventLog == \"Operations Manager\" and EventID >= 2000 and EventID <= 3000 | sort by TimeGenerated desc\r\n// Oql: Type=Event EventLog=\"Operations Manager\" EventID:[2000..3000] // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|EventsWithStartedinEventID')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Count of Events containing the word \"started\" grouped by EventID",
+                "category": "Log Management",
+                "query": "search in (Event) \"started\" | summarize AggregatedValue = count() by EventID\r\n// Oql: Type=Event \"started\" | Measure count() by EventID // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|FindMaximumTimeTakenForEachPage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Find the maximum time taken for each page",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = max(TimeTaken) by csUriStem\r\n// Oql: Type=W3CIISLog | Measure Max(TimeTaken) by csUriStem // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|IISLogEntriesForClientIP')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "IIS Log Entries for a specific client IP Address (replace with your own)",
+                "category": "Log Management",
+                "query": "search cIP == \"192.168.0.1\" | extend Type = $table | where Type == W3CIISLog | sort by TimeGenerated desc | project csUriStem, scBytes, csBytes, TimeTaken, scStatus\r\n// Oql: Type=W3CIISLog cIP=\"192.168.0.1\" | Select csUriStem,scBytes,csBytes,TimeTaken,scStatus // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|ListAllIISLogEntries')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "All IIS Log Entries",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | sort by TimeGenerated desc\r\n// Oql: Type=W3CIISLog // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|NoOfConnectionsToOMSDKService')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "How many connections to Operations Manager's SDK service by day",
+                "category": "Log Management",
+                "query": "Event | where EventID == 26328 and EventLog == \"Operations Manager\" | summarize AggregatedValue = count() by bin(TimeGenerated, 1d) | sort by TimeGenerated desc\r\n// Oql: Type=Event EventID=26328 EventLog=\"Operations Manager\" | Measure count() interval 1DAY // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|ServerRestartTime')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "When did my servers initiate restart?",
+                "category": "Log Management",
+                "query": "search in (Event) \"shutdown\" and EventLog == \"System\" and Source == \"User32\" and EventID == 1074 | sort by TimeGenerated desc | project TimeGenerated, Computer\r\n// Oql: shutdown Type=Event EventLog=System Source=User32 EventID=1074 | Select TimeGenerated,Computer // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|Show404PagesList')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Shows which pages people are getting a 404 for",
+                "category": "Log Management",
+                "query": "search scStatus == 404 | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by csUriStem\r\n// Oql: Type=W3CIISLog scStatus=404 | Measure count() by csUriStem // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|ShowServersThrowingInternalServerError')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Shows servers that are throwing internal server error",
+                "category": "Log Management",
+                "query": "search scStatus == 500 | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = count() by sComputerName\r\n// Oql: Type=W3CIISLog scStatus=500 | Measure count() by sComputerName // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|TotalBytesReceivedByEachAzureRoleInstance')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Total Bytes received by each Azure Role Instance",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = sum(csBytes) by RoleInstance\r\n// Oql: Type=W3CIISLog | Measure Sum(csBytes) by RoleInstance // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|TotalBytesReceivedByEachIISComputer')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Total Bytes received by each IIS Computer",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = sum(csBytes) by Computer | limit 500000\r\n// Oql: Type=W3CIISLog | Measure Sum(csBytes) by Computer | top 500000 // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|TotalBytesRespondedToClientsByClientIPAddress')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Total Bytes responded back to clients by Client IP Address",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = sum(scBytes) by cIP\r\n// Oql: Type=W3CIISLog | Measure Sum(scBytes) by cIP // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|TotalBytesRespondedToClientsByEachIISServerIPAddress')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Total Bytes responded back to clients by each IIS ServerIP Address",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = sum(scBytes) by sIP\r\n// Oql: Type=W3CIISLog | Measure Sum(scBytes) by sIP // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|TotalBytesSentByClientIPAddress')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Total Bytes sent by Client IP Address",
+                "category": "Log Management",
+                "query": "search * | extend Type = $table | where Type == W3CIISLog | summarize AggregatedValue = sum(csBytes) by cIP\r\n// Oql: Type=W3CIISLog | Measure Sum(csBytes) by cIP // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PEF: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|WarningEvents')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "All Events with level \"Warning\"",
+                "category": "Log Management",
+                "query": "Event | where EventLevelName == \"warning\" | sort by TimeGenerated desc\r\n// Oql: Type=Event EventLevelName=warning // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|WindowsFireawallPolicySettingsChanged')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "Windows Firewall Policy settings have changed",
+                "category": "Log Management",
+                "query": "Event | where EventLog == \"Microsoft-Windows-Windows Firewall With Advanced Security/Firewall\" and EventID == 2008 | sort by TimeGenerated desc\r\n// Oql: Type=Event EventLog=\"Microsoft-Windows-Windows Firewall With Advanced Security/Firewall\" EventID=2008 // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('workspaces_wtpoltxop24im_name'), '/LogManagement(', parameters('workspaces_wtpoltxop24im_name'), ')_LogManagement|WindowsFireawallPolicySettingsChangedByMachines')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_wtpoltxop24im_name'))]"
+            ],
+            "properties": {
+                "displayName": "On which machines and how many times have Windows Firewall Policy settings changed",
+                "category": "Log Management",
+                "query": "Event | where EventLog == \"Microsoft-Windows-Windows Firewall With Advanced Security/Firewall\" and EventID == 2008 | summarize AggregatedValue = count() by Computer | limit 500000\r\n// Oql: Type=Event EventLog=\"Microsoft-Windows-Windows Firewall With Advanced Security/Firewall\" EventID=2008 | measure count() by Computer | top 500000 // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                "version": 2
+            }
+        },
+        {
+            "type": "Microsoft.Network/azureFirewalls",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('azureFirewalls_AzureFirewall_name')]",
+            "location": "australiaeast",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_pip_firewall_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_hub_name'), 'AzureFirewallSubnet')]"
+            ],
+            "properties": {
+                "sku": {
+                    "name": "AZFW_VNet",
+                    "tier": "Standard"
+                },
+                "threatIntelMode": "Alert",
+                "additionalProperties": {},
+                "ipConfigurations": [
+                    {
+                        "name": "[parameters('azureFirewalls_AzureFirewall_name')]",
+                        "properties": {
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_pip_firewall_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_hub_name'), concat(parameters('azureFirewalls_AzureFirewall_name'), 'Subnet'))]"
+                            }
+                        }
+                    }
+                ],
+                "networkRuleCollections": [],
+                "applicationRuleCollections": [],
+                "natRuleCollections": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/bastionHosts",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('bastionHosts_AzureBastionHost_name')]",
+            "location": "australiaeast",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_pip_bastion_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_hub_name'), 'AzureBastionSubnet')]"
+            ],
+            "sku": {
+                "name": "Basic"
+            },
+            "properties": {
+                "dnsName": "bst-81276a78-ca8f-4500-9030-2c6020fa5679.bastion.azure.com",
+                "ipConfigurations": [
+                    {
+                        "name": "IpConf",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_pip_bastion_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_hub_name'), 'AzureBastionSubnet')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_hub_name'), '/AzureBastionSubnet')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_hub_bastion_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.1.0/29",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_hub_bastion_name'))]"
+                },
+                "routeTable": {
+                    "id": "[parameters('routeTables__e41f87a2_AZBST_RT_81276a78_ca8f_4500_9030_2c6020fa5679_externalid')]"
+                },
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_hub_name'), '/hub-to-spoke-one')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_spoke_one_name'))]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_spoke_one_name'))]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.100.0.0/16"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_hub_name'), '/hub-to-spoke-two')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_spoke_two_name'))]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_spoke_two_name'))]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.200.0.0/16"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_spoke_one_name'), '/spoke-one-to-hub')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_spoke_one_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/20"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_spoke_two_name'), '/spoke-two-to-hub')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_spoke_two_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/20"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('virtualNetworks_vnet_hub_name')]",
+            "location": "australiaeast",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_hub_bastion_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_spoke_one_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_spoke_two_name'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/20"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "AzureFirewallSubnet",
+                        "properties": {
+                            "addressPrefix": "10.0.3.0/26",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                    {
+                        "name": "GatewaySubnet",
+                        "properties": {
+                            "addressPrefix": "10.0.2.0/27",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                    {
+                        "name": "AzureBastionSubnet",
+                        "properties": {
+                            "addressPrefix": "10.0.1.0/29",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_hub_bastion_name'))]"
+                            },
+                            "routeTable": {
+                                "id": "[parameters('routeTables__e41f87a2_AZBST_RT_81276a78_ca8f_4500_9030_2c6020fa5679_externalid')]"
+                            },
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [
+                    {
+                        "name": "hub-to-spoke-one",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_spoke_one_name'))]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": false,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": false,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.100.0.0/16"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "name": "hub-to-spoke-two",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_spoke_two_name'))]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": false,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": false,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.200.0.0/16"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('virtualNetworks_vnet_spoke_one_name')]",
+            "location": "australiaeast",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_spoke_one_resources_name'))]",
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_r_nexthop_to_fw_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.100.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "snet-spoke-resources",
+                        "properties": {
+                            "addressPrefix": "10.100.0.0/16",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_spoke_one_resources_name'))]"
+                            },
+                            "routeTable": {
+                                "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_r_nexthop_to_fw_name'))]"
+                            },
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [
+                    {
+                        "name": "spoke-one-to-hub",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": false,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": false,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.0.0.0/20"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('virtualNetworks_vnet_spoke_two_name')]",
+            "location": "australiaeast",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_spoke_two_resources_name'))]",
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_r_nexthop_to_fw_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.200.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "snet-spoke-resources",
+                        "properties": {
+                            "addressPrefix": "10.200.0.0/16",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_spoke_two_resources_name'))]"
+                            },
+                            "routeTable": {
+                                "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_r_nexthop_to_fw_name'))]"
+                            },
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [
+                    {
+                        "name": "spoke-two-to-hub",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_hub_name'))]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": false,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": false,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.0.0.0/20"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_spoke_one_name'), '/snet-spoke-resources')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_spoke_one_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_spoke_one_resources_name'))]",
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_r_nexthop_to_fw_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.100.0.0/16",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_spoke_one_resources_name'))]"
+                },
+                "routeTable": {
+                    "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_r_nexthop_to_fw_name'))]"
+                },
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_spoke_two_name'), '/snet-spoke-resources')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_spoke_two_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_spoke_two_resources_name'))]",
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_r_nexthop_to_fw_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.200.0.0/16",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_spoke_two_resources_name'))]"
+                },
+                "routeTable": {
+                    "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_r_nexthop_to_fw_name'))]"
+                },
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        }
+    ]
+}
