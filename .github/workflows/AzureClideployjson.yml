@@ -26,5 +26,5 @@ jobs:
           az group create --name hub-spoke --location "Australia East"
           az deployment group create \
           --resource-group hub-spoke \
-          --template-file ./arm-template/template.json \
+          --template-file ./arm-templates/template.json \
           --parameters parameters.json
