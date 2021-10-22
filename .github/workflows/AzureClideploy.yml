@@ -27,5 +27,5 @@ jobs:
           az deployment group create \
               --resource-group hub-spoke \
               --template-uri https://raw.githubusercontent.com/mspnp/samples/master/solutions/azure-hub-spoke/azuredeploy.json \
-              --parameters adminPassword=Password2020! linuxVMCount=1 windowsVMCount=1
+              --parameters adminUserName=Melcloudadmin adminPassword=Password2020! linuxVMCount=1 windowsVMCount=1
 
