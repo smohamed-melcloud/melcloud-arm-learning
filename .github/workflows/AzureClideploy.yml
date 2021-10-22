@@ -25,6 +25,6 @@ jobs:
         azcliversion: 2.0.72
         inlineScript: |
           az deployment group create \
-              --resource-group hub-spoke \
-              --template-uri https://raw.githubusercontent.com/mspnp/samples/master/solutions/azure-hub-spoke/azuredeploy.json \
-              --parameters adminPassword=Password2020! linuxVMCount=1 windowsVMCount=1 deployVpnGateway=true
+            --resource-group hub-spoke \
+            --template-uri https://raw.githubusercontent.com/mspnp/samples/master/solutions/azure-hub-spoke/azuredeploy.json \
+            --parameters adminPassword=Password2020! linuxVMCount=1 windowsVMCount=1 deployVpnGateway=true
