@@ -169,7 +169,7 @@
             },
             "resources": [
                 {
-                    "type": "Microsoft.Network/virtualNetworks/subnets",
+                    "type": "providers/diagnosticSettings",
                     "apiVersion": "2017-05-01-preview",
                     "name": "[concat('Microsoft.Insights/default', variables('logAnalyticsWorkspace'))]",
                     "dependsOn": [
@@ -337,7 +337,7 @@
             },
             "resources": [
                 {
-                    "type": "Microsoft.Network/virtualNetworks/subnets",
+                    "type": "providers/diagnosticSettings",
                     "apiVersion": "2017-05-01-preview",
                     "name": "[concat('Microsoft.Insights/default', variables('logAnalyticsWorkspace'))]",
                     "dependsOn": [
@@ -393,7 +393,7 @@
             },
             "resources": [
                 {
-                    "type": "Microsoft.Network/virtualNetworks/subnets",
+                    "type": "providers/diagnosticSettings",
                     "apiVersion": "2017-05-01-preview",
                     "name": "[concat('Microsoft.Insights/default', variables('logAnalyticsWorkspace'))]",
                     "dependsOn": [
@@ -453,7 +453,7 @@
             },
             "resources": [
                 {
-                    "type": "Microsoft.Network/virtualNetworks/subnets",
+                    "type": "providers/diagnosticSettings",
                     "apiVersion": "2017-05-01-preview",
                     "name": "[concat('Microsoft.Insights/default', variables('logAnalyticsWorkspace'))]",
                     "dependsOn": [
@@ -509,7 +509,7 @@
             },
             "resources": [
                 {
-                    "type": "Microsoft.Network/virtualNetworks/subnets",
+                    "type": "providers/diagnosticSettings",
                     "apiVersion": "2017-05-01-preview",
                     "name": "[concat('Microsoft.Insights/default', variables('logAnalyticsWorkspace'))]",
                     "dependsOn": [
@@ -733,7 +733,7 @@
             },
             "resources": [
                 {
-                    "type": "Microsoft.Network/virtualNetworks/subnets",
+                    "type": "providers/diagnosticSettings",
                     "apiVersion": "2017-05-01-preview",
                     "name": "[concat('Microsoft.Insights/default', variables('logAnalyticsWorkspace'))]",
                     "dependsOn": [
