@@ -27,6 +27,6 @@ jobs:
         inlineScript: |
           az deployment group create \
           --resource-group hub-spoke \
-          --template-file  ./arm-remplates/azuredeploy1.json \
+          --template-file  ./arm-templates/azuredeploy1.json \
           --parameters adminUserName=Melcloudadmin adminPassword=Password2020! linuxVMCount=0 windowsVMCount=1
          
