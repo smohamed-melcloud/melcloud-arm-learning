@@ -1,4 +1,8 @@
-on: [push]
+on: 
+  push:
+    branches:
+      - main
+
 
 name: WVD Deployment
 
@@ -7,9 +11,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-       subscriptionId: 0268ad35-91f4-4596-a9ee-70245667e9d1
-       resource_group_name: rg-wvd
-       location: Australia East
+       subscriptionId: 0268ad35-91f4-4596-a9ee-70245667e9d1       
     environment:
        name: staging
     steps:
@@ -26,5 +28,5 @@ jobs:
           az group create --name hub-spoke --location "Australia East"
           az deployment group create \
           --resource-group hub-spoke \
-          --template-file ./arm-templates/template.json \
-          --parameters parameters.json
+          --template-file ./arm-templates/azuredeploy1.json \
+          --parameters adminUserName=Melcloudadmin adminPassword=Password2020! linuxVMCount=0 windowsVMCount=1
