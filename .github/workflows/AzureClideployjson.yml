@@ -28,5 +28,5 @@ jobs:
           az group create --name hub-spoke --location "Australia East"
           az deployment group create \
           --resource-group hub-spoke \
-          --template-file ./azuredeploy.json \
+          --template-file  azuredeploy.json \
           --parameters adminUserName=Melcloudadmin adminPassword=Password2020! linuxVMCount=0 windowsVMCount=1
