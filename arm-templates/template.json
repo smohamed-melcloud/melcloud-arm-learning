@@ -373,7 +373,7 @@
         },
         {
             "type": "Microsoft.OperationalInsights/workspaces",
-            "apiVersion": "2021-06-01",
+            "apiVersion": "2020-10-01",
             "name": "[parameters('workspaces_wtpoltxop24im_name')]",
             "location": "australiaeast",
             "properties": {
